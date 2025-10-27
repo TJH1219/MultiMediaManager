@@ -1,3 +1,3 @@
 from .DatabaseConnection import DatabaseConnection
 
-__all__ = ['DatabaseConnection']
+__all__ = ['DatabaseConnection','DatabaseManager']

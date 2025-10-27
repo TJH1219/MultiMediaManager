@@ -1,0 +1,77 @@
+### Variables
+@baseUrl = http://127.0.0.1:5000
+
+### Post request to create game
+POST {{baseUrl}}/games
+Content-Type: application/json
+
+{
+  "meta": {
+    "title": "The Legend of Zelda",
+    "description": "An epic adventure game",
+    "file_path": "/games/zelda.exe",
+    "file_size": 1024000
+  },
+  "game": {
+    "image_url": "/images/zelda.png"
+  }
+}
+
+> {%
+    client.test("Game Create Test", function() {
+        client.assert(response.status === 201, "Expected Status 201")
+        client.assert(response.body === "Game created", "Expected Message Game Created")
+    })
+%}
+###Get request to get all games
+GET {{baseUrl}}/games
+
+> {%
+    client.test("Get All Games Status", function() {
+        client.assert(response.status === 200, "Expected Status 200")
+    })
+    client.test("Get All Games Body", function() {
+        client.assert(response.body[0]["id"] === 1, "Expected ID 1")
+        client.assert(response.body[0]["title"] === "The Legend of Zelda", "Expected Title Zelda")
+        client.assert(response.body[0]["description"] === "An epic adventure game", "Expected Description Zelda")
+        client.assert(response.body[0]["image_url"] === "/images/zelda.png", "Expected Image URL Zelda")
+        client.assert(response.body[0]["file_path"] === "/games/zelda.exe", "Expected File Path Zelda")
+        client.assert(response.body[0]["file_size"] === 1024000, "Expected File Size Zelda")
+    })
+%}
+### Get request to get a single game
+GET {{baseUrl}}/games/1
+
+> {%
+    client.test("Get All Games Status", function() {
+        client.assert(response.status === 200, "Expected Status 200")
+    })
+    client.test("Get All Games Body", function() {
+        client.assert(response.body["id"] === 1, "Expected ID 1")
+        client.assert(response.body["title"] === "The Legend of Zelda", "Expected Title Zelda")
+        client.assert(response.body["description"] === "An epic adventure game", "Expected Description Zelda")
+        client.assert(response.body["image_url"] === "/images/zelda.png", "Expected Image URL Zelda")
+        client.assert(response.body["file_path"] === "/games/zelda.exe", "Expected File Path Zelda")
+        client.assert(response.body["file_size"] === 1024000, "Expected File Size Zelda")
+    })
+%}
+### Delete request to remove a game
+DELETE {{baseUrl}}/games/1
+
+> {%
+    client.test("Delete Game", function() {
+        client.assert(response.status === 200, "Expected Status 200")
+        client.assert(response.body === "Game deleted", "Expected Message Game Deleted")
+    })
+ %}
+
+### Delete request to reset database
+DELETE {{baseUrl}}/reset
+
+> {%
+    client.test("Reset Database", function() {
+        client.assert(response.status === 200, "Expected Status 200")
+        client.assert(response.body === "Database reset", "Expected Message Database Reset")
+    })
+ %}
+###
