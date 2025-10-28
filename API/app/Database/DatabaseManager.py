@@ -4,6 +4,25 @@ from .DatabaseConnection import DatabaseConnection
 from os import path
 from datetime import datetime
 
+#Helpler method for update methods that parse the data dict and created the "updates" member
+def parse_updates(data):
+    updates = {k: v for k, v in data.items() if k != "id" and v is not None}
+    if not updates:
+        return False
+
+    if "updated_at" in data:
+        updates["updated_at"] = datetime.now()
+
+    return updates
+
+#Helper method to create the set clause and the list of values used to update the table
+def create_set_clause(updates, id_value):
+    set_clause = ', '.join([f"{key} = ?" for key in updates.keys()])
+    values = list(updates.values())
+    values.append(id_value)
+    return set_clause, values
+
+
 class DatabaseManager:
     def __init__(self, db_path):
         #Check if the database exists
@@ -56,15 +75,51 @@ class DatabaseManager:
     def update_metadata_full(self, data):
         """Update all metadata fields"""
         with self.DatabaseConnection as conn:
-            conn.execute("""
-                           UPDATE MetaData
-                           SET title       = ?,
-                               description = ?,
-                               updated_at  = CURRENT_TIMESTAMP
-                           WHERE id = ?
-                           """, data)
+            try:
+                id_value = data.get("id", None)
+                if not id_value:
+                    return False
+                updates = parse_updates(data)
+                if not updates:
+                    return False
 
-            return conn.rowcount > 0
+                set_clause, values = create_set_clause(updates, id_value)
+
+                conn.execute(f"""
+                UPDATE MetaData
+                SET {set_clause}
+                WHERE id = ?
+                """, values)
+
+                return conn.rowcount > 0
+
+            except Exception as e:
+                print(f"Exception: {e}")
+                return False
+
+    def update_game(self, data):
+        with self.DatabaseConnection as conn:
+            try:
+                id_value = data.get("id", None)
+                if not id_value:
+                    return False
+
+                updates = parse_updates(data)
+                if not updates:
+                    return False
+
+                set_clause, values = create_set_clause(updates, id_value)
+
+                conn.execute(f"""
+                UPDATE GameData
+                Set {set_clause}
+                WHERE id = ?
+                """, values)
+
+                return conn.rowcount > 0
+            except Exception as e:
+                print(f"Exception: {e}")
+                return False
 
 
     def insert_game(self, image_url, metadata_id):
@@ -104,12 +159,3 @@ class DatabaseManager:
         except sqlite3.Error as e:
             print(f"SQL Exception: {e}")
             return None
-
-    def update_game(self, data):
-        with self.DatabaseConnection as conn:
-            conn.execute("""
-            UPDATE GameData
-            SET image_url = ?
-            WHERE id = ?
-            """, data)
-            return conn.rowcount > 0

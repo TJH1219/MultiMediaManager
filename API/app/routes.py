@@ -55,13 +55,17 @@ def update_game():
     meta = data.get("meta")
     game = data.get("game")
     # Attempt to update the metadata table, save the number of rows affected to the variable meta_update
-    meta_update = db_manager.update_metadata_full(**meta)
+    meta_update = db_manager.update_metadata_full(meta)
+
+    if not meta_update:
+        return jsonify("Query failed"), 404
 
     # Attempt to update the game data table, save the number of rows affected to the variable game_update
-    game_update = db_manager.update_game(**game)
+    game_update = db_manager.update_game(game)
 
-    if meta_update == 0 or game_update == 0:
+    if not game_update:
         return jsonify("Query failed"), 404
+
     return jsonify("Game updated"), 200
 
 # Only used for testing will delete database!

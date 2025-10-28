@@ -55,6 +55,44 @@ GET {{baseUrl}}/games/1
         client.assert(response.body["file_size"] === 1024000, "Expected File Size Zelda")
     })
 %}
+### PUT request to update game
+PUT {{baseUrl}}/games
+Content-Type: application/json
+
+{
+    "meta": {
+      "id": 1,
+      "title": "Game",
+      "description": "A Ggea",
+      "file_path": "/games/game.exe",
+      "file_size": 1,
+      "updated_at":"{{$isoTimestamp}}"
+  },
+    "game": {
+      "id": 1,
+      "image_url": "/images/game.png"
+  }
+}
+
+> {%
+    client.test("Game Update Test", function() {
+        client.assert(response.status === 200, "Expected Status 200")
+        client.assert(response.body === "Game updated", "Expected Message Game Updated")
+    })
+ %}
+### GET Request to check if update took place
+GET {{baseUrl}}/games/1
+
+> {%
+    client.test("Game Update Test", function() {
+        client.assert(response.status === 200, "Expected Status 200")
+        client.assert(response.body["title"] === "Game", "Expected Title Game")
+        client.assert(response.body["description"] === "A Ggea", "Expected Description Game")
+        client.assert(response.body["image_url"] === "/images/game.png", "Expected Image URL Game")
+        client.assert(response.body["file_path"] === "/games/game.exe", "Expected File Path Game")
+        client.assert(response.body["file_size"] === 1, "Expected File Size Game")
+    })
+ %}
 ### Delete request to remove a game
 DELETE {{baseUrl}}/games/1
 
