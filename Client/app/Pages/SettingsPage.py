@@ -19,7 +19,7 @@ class SettingsPage(QWidget):
         layout.addWidget(self.temp_label)
 
         self.NavigateButton = QPushButton("Go Back")
-        self.NavigateButton.clicked.connect(lambda: self.navigate_to.emit("main"))
+        self.NavigateButton.clicked.connect(lambda: self.navigate_to.emit("dashboard"))
         layout.addWidget(self.NavigateButton)
 
     def show(self) -> None:

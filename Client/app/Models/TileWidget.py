@@ -10,12 +10,12 @@ class TileWidget(QFrame):
 
     clicked = Signal(str)
 
-    def __init__(self, item_id:str, thumbnail_path:str, parent:QWidget | None = None) -> None:
+    def __init__(self, item_id:int, thumbnail_path:str, parent:QWidget | None = None) -> None:
         super().__init__(parent)
-        self._item_id = item_id
+        self.item_id = item_id
 
         self.setObjectName("tileWidget")
-        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
@@ -42,20 +42,20 @@ class TileWidget(QFrame):
 
         self.setStyleSheet(
             """
-            QFrame##TileWidget{
-                border: apx solid #555
-                border-radius: 4px;
-                background-color: #222;
-            }
-            QFrame##TileWidget:hover{
-                border: 1px solid #6a9ff8;
-            }
+                QFrame#tileWidget {
+                    border: 1px solid #555;
+                    border-radius: 4px;
+                    background-color: #222;
+                }
+                QFrame#tileWidget:hover {
+                    border: 2px solid #6a9ff8;
+                }
             """
         )
 
     def mousePressEvent(self, event:QMouseEvent) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
-            self.clicked.emit(self._item_id)
+            self.clicked.emit(self.item_id)
         super().mousePressEvent(event)
 
     def enterEvent(self, event):

@@ -1,0 +1,32 @@
+@baseUrl = http://127.0.0.1:5000
+
+POST {{baseUrl}}/games
+Content-Type: application/json
+
+{
+  "meta": {
+    "title": "The Legend of Zelda",
+    "description": "An epic adventure game",
+    "file_path": "/games/zelda.exe",
+    "file_size": 1024000
+  },
+  "game": {
+    "image_url": "/images/zelda.png"
+  }
+}
+
+###
+POST {{baseUrl}}/games
+Content-Type: application/json
+
+{
+  "meta": {
+    "title": "This War Of Mine",
+    "description": "A War Game told from the perspective of a civilian",
+    "file_path": "/games/ThisWarOfMine.exe",
+    "file_size": 1024000
+  },
+  "game": {
+    "image_url": "/images/twof.png"
+  }
+}

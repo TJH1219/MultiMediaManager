@@ -29,8 +29,8 @@ class DatabaseManager:
         #Create the object that represents the connection to the database
         self.DatabaseConnection = DatabaseConnection(db_path)
         #if the database does not exist before a connection object is made, init the tables
-        if not db_exists:
-            self.Init_Database()
+
+        self.Init_Database()
 
     def Init_Database(self):
         with self.DatabaseConnection as conn:

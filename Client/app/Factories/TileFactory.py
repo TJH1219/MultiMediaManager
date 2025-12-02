@@ -5,11 +5,11 @@
 """
 from PySide6.QtWidgets import QWidget
 
-from Client.app.models.TileWidget import TileWidget
+from Client.app.Models.TileWidget import TileWidget
 
 
-def create_tiles(self, data: list, parent:QWidget = None) -> list:
+def create_tiles(data: list, parent:QWidget = None) -> list:
     tile_list = []
     for item in data:
-        tile_list.append(TileWidget(item.id, item.thumbnail_path, parent))
+        tile_list.append(TileWidget(item.id, item.image_url, parent))
     return tile_list

@@ -1,11 +1,13 @@
 from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QMainWindow, QStackedWidget
 
+from Client.app.Managers.ConfigManager import ConfigManager
 # WindowManager no longer needed here:
 # from Client.app.Managers.WindowManager import WindowManager
 from Client.app.Pages.DisplayPage import DisplayPage
 from Client.app.Pages.DashBoard import DashBoard
 from Client.app.Pages.SettingsPage import SettingsPage
+from Client.app.Models.ContentModel import ContentModel
 
 
 class AppManager(QMainWindow):
@@ -13,7 +15,7 @@ class AppManager(QMainWindow):
         super().__init__()
         self._setup_window()
         self._setup_pages()
-        self._switch_page("main")  # start on main
+        self._switch_page("dashboard")  # start on main
 
     def _setup_window(self):
         """Configure main window properties"""
@@ -27,7 +29,7 @@ class AppManager(QMainWindow):
 
     def _setup_pages(self):
         #Create pages
-        self.dashboard_page = DashBoard()
+        self.dashboard_page = DashBoard(None,ConfigManager())
         self.display_page = DisplayPage()
         self.settings_page = SettingsPage()
 
@@ -40,15 +42,15 @@ class AppManager(QMainWindow):
         # From MainPage: open DisplayPage for a given item
         self.dashboard_page.display_item_selected.connect(self._open_display_for_item)
 
-        # (optional) if you still want generic navigate_to usage:
+        # (optional) if you still want a generic navigate_to usage:
         self.dashboard_page.navigate_to.connect(self._switch_page)
 
         # Go back from DisplayPage / SettingsPage -> main
         self.display_page.navigate_to.connect(self._switch_page)
         self.settings_page.navigate_to.connect(self._switch_page)
 
-    def _open_display_for_item(self, item_id: str):
-        self.display_page.set_content(item_id)
+    def _open_display_for_item(self, model):
+        self.display_page.set_content(model)
         self._switch_page("display")
 
     def _switch_page(self, page_name: str):
